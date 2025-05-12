@@ -56,8 +56,8 @@ if __name__ == "__main__":
 
         controller.ControllerInput(polynomialfit.coeff, Vx)
         ego_vehicle.update(controller.u, Vx)
-        print(f"[Step {i}] coeff.T = {polynomialfit.coeff.T}")
-        print(f"[Step {i}] LocalPoints =\n{frameconverter.LocalPoints}")
+ 
+      
 
     plt.figure(1)
     plt.plot(X_ref, Y_ref, 'k-', label="Reference")

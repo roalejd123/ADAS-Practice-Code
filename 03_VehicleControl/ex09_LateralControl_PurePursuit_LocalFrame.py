@@ -50,8 +50,7 @@ if __name__ == "__main__":
         Points_ref = np.column_stack((X_ref_convert, Y_ref_convert))
        
 
-        print(f"[Step {i}] Yaw = {ego_vehicle.Yaw}")
-        print(f"[Step {i}] Y =\n{ego_vehicle.Y}")
+
 
         frameconverter.convert(Points_ref, ego_vehicle.Yaw, ego_vehicle.X, ego_vehicle.Y)
         polynomialfit.fit(frameconverter.LocalPoints)
