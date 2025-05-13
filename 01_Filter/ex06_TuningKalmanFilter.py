@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class KalmanFilter:
-    def __init__(self, y_Measure_init, step_time=0.1, m=0.1, modelVariance=0.01, measureVariance=1.0, errorVariance_init=10.0):
-        self.A = 1.0  # 상태전이 행렬
+    def __init__(self, y_Measure_init, step_time=0.001, m=0.1, modelVariance=1, measureVariance=15.0, errorVariance_init=10.0):
+        self.A = 1.0+step_time  # 상태전이 행렬
         self.B = step_time / m  # 입력 u의 계수
         self.C = 1.0  # 관측 행렬
         self.Q = modelVariance  # 모델 노이즈 분산

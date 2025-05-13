@@ -6,11 +6,58 @@ from ex01_PathPlanning_BothLane import Global2Local, Polyfit, VehicleModel_Lat, 
 class LaneWidthEstimator(object):
     def __init__(self, Lw_init=3.0):
         self.Lw = Lw_init
-    # Code
+
+    def update(self, coeff_L, coeff_R, isLaneValid_L, isLaneValid_R):
+        if all(isLaneValid_L) and all(isLaneValid_R):
+            x = np.linspace(0, 5.0, 20)
+            y_L = np.polyval(coeff_L, x)
+            y_R = np.polyval(coeff_R, x)
+            width = np.mean(y_R - y_L)
+            self.Lw = 0.9 * self.Lw + 0.1 * width  # 평활 필터
+
+
+
+def shift_poly(coeff, shift, direction="+"):
+    """
+    주어진 다항식 계수(coeff)를 기반으로 일정 간격 평행 이동한 좌표 (x, y)를 반환
+    direction이 '+'이면 y값을 shift만큼 위로 이동 (오른쪽 차선 추정), '-'이면 아래로
+    """
+    x = np.linspace(0, 5.0, 10)
+    y = np.polyval(coeff, x)
+    if direction == "+":
+        y_shifted = y + shift
+    else:
+        y_shifted = y - shift
+    return x, y_shifted
 
 def EitherLane2Path(coeff_L, coeff_R, isLaneValid_L, isLaneValid_R, Lw):
-    # Code
-    return 0
+    x = np.linspace(0, 5.0, 20)  # 고정된 로컬 프레임에서 앞쪽 5m
+
+    if all(isLaneValid_L) and all(isLaneValid_R):
+        y_L = np.polyval(coeff_L, x)
+        y_R = np.polyval(coeff_R, x)
+        y_path = (y_L + y_R) / 2.0
+        coeff_path = np.polyfit(x, y_path, 3).tolist()
+
+    elif all(isLaneValid_L):
+        y_L = np.polyval(coeff_L, x)
+        y_R_est = y_L + Lw  # 오른쪽 차선 추정
+        y_path = (y_L + y_R_est) / 2.0
+        coeff_path = np.polyfit(x, y_path, 3).tolist()
+
+    elif all(isLaneValid_R):
+        y_R = np.polyval(coeff_R, x)
+        y_L_est = y_R - Lw  # 왼쪽 차선 추정
+        y_path = (y_L_est + y_R) / 2.0
+        coeff_path = np.polyfit(x, y_path, 3).tolist()
+
+    else:
+        coeff_path = [0.0, 0.0, 0.0, 0.0]
+
+    return coeff_path
+
+
+
         
 if __name__ == "__main__":
     step_time = 0.1

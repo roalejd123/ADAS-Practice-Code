@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class KalmanFilter:
-    def __init__(self, y_init, step_time=0.1, m=10.0, k=100.0, b=2.0,
-                 Q_x=0.01, Q_v=0.1, R=5.0, errorCov_init=10.0):
+    def __init__(self, y_init, step_time=0.001, m=10.0, k=100.0, b=2.0,
+                 Q_x=0.05, Q_v=0.5, R=0.1, errorCov_init=10.0):
         # 상태 공간 모델 행렬 설정
         self.A = np.array([[1.0, step_time],
                            [-step_time * k / m, 1.0 - step_time * b / m]])
